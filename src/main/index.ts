@@ -8,6 +8,8 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
+    minWidth: 1024,
+    minHeight: 768,
     show: true,
     autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -51,6 +53,7 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.on('log', (_, ...args) => console.log(...args))
 
   createWindow()
 
