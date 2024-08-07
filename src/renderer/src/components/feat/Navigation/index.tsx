@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import IconButton from '../../pure/IconButton'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Nav = styled.nav`
   display: flex;
@@ -18,6 +19,7 @@ const Nav = styled.nav`
 
 const Navigation = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false)
+  const navigate = useNavigate()
 
   const handleNavigationOpen = (): void => {
     setIsOpen((state) => !state)
@@ -25,6 +27,7 @@ const Navigation = (): JSX.Element => {
 
   const makeHandleRoute = (route: string) => (): void => {
     window.electron.ipcRenderer.send('log', 'go', route)
+    navigate(route)
   }
 
   return (
