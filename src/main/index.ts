@@ -5,9 +5,12 @@ import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
   // Create the browser window.
+  // minWidth, minHeight을 width, height 동일하게 해서 크기 조정을 막음.
   const mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
+    minWidth: 1024,
+    minHeight: 768,
     show: true,
     autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
