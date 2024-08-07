@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import ExpandableButton from '../../pure/ExpandableButton'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const StyledNavigation = styled.nav`
   display: flex;
@@ -33,6 +34,7 @@ export type NavigationProps = {
 const Navigation = (props: { navList: Array<NavigationProps> }): JSX.Element => {
   const { navList } = props
   const [isOpen, setIsOpen] = useState(false)
+  const navigate = useNavigate()
 
   const handleNavigationOpen = (): void => {
     setIsOpen((state) => !state)
@@ -40,6 +42,7 @@ const Navigation = (props: { navList: Array<NavigationProps> }): JSX.Element => 
 
   const makeHandleRoute = (route: string) => (): void => {
     window.electron.ipcRenderer.send('log', 'go', route)
+    navigate(route)
   }
 
   return (
