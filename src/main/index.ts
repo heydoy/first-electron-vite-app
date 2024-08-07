@@ -54,6 +54,7 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.on('log', (_, ...args) => console.log(...args))
 
   createWindow()
 

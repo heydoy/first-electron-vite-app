@@ -1,11 +1,17 @@
 import Versions from './components/Versions'
 import electronLogo from './assets/electron.svg'
+import Navigation from './components/feat/Navigation'
+import { NavigationProps } from './components/feat/Navigation'
 
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
+  const navigationProps: NavigationProps[] = [
+    { icon: 'labeling', desc: 'labeling', route: 'route' },
+    { icon: 'project', desc: 'project', route: 'project' }
+  ]
   return (
     <>
+      <Navigation navList={navigationProps} />
       <img alt="logo" className="logo" src={electronLogo} />
       <div className="creator">Powered by electron-vite</div>
       <div className="text">
