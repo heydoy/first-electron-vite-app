@@ -1,8 +1,8 @@
 export type dataType = {
-  index: number,
-  title: string,
-  description: string,
-  link: string,
+  index: number
+  title: string
+  description: string
+  link: string
 }
 
 const db: dataType[] = Array.from({ length: 200 }, (_, index) => ({
