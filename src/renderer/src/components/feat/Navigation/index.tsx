@@ -36,13 +36,21 @@ const Navigation = (props: { navList: Array<NavigationProps> }): JSX.Element => 
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
 
-  const handleNavigationOpen = (): void => {
-    setIsOpen((state) => !state)
-  }
-
-  const makeHandleRoute = (route: string) => (): void => {
+  const handleRoute = (route: string): void => {
     window.electron.ipcRenderer.send('log', 'go', route)
     navigate(route)
+  }
+
+  // - 클로저 개념에 대해 알아보기
+  // 외부함수보다 중첩함수의 생명주기가 더 오래 유지되는 경우, 이미 생명주기가 종료된 외부함수의 변수를 참조할 수 있다.
+  // 이러한 중첩함수를 클로저라고 한다.
+  // 클로저는 상태를 안전하게 변경하고 유지하기 위해 사용된다.
+  // 즉 상태를 안전하게 은닉하고 특정함수에게만 상태 변경을 허용할 수 있다.
+  const makeHandleRoute = (route: string) => (): void => handleRoute(route)
+
+  const handleNavigationOpen = (): void => {
+    setIsOpen((state) => !state)
+    handleRoute('/')
   }
 
   return (
