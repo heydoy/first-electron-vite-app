@@ -1,5 +1,5 @@
 import * as db from '../db'
-import { dataType } from '../db/mock'
+import { DataType } from '../db/mock'
 
 const setHandler = (ipcMain: Electron.IpcMain): void => {
   ipcMain.on('ping', () => console.log('pong'))
@@ -9,19 +9,19 @@ const setHandler = (ipcMain: Electron.IpcMain): void => {
   ipcMain.on('db-getAll', async (event) => {
     event.returnValue = await db.getAll()
   })
-  ipcMain.on('db-get', async (event, index: dataType['index']) => {
+  ipcMain.on('db-get', async (event, index: DataType['index']) => {
     event.returnValue = await db.get(index)
   })
-  ipcMain.on('db-post', async (event, data: Omit<dataType, 'index'>) => {
+  ipcMain.on('db-post', async (event, data: Omit<DataType, 'index'>) => {
     event.returnValue = await db.post(data)
   })
   ipcMain.on(
     'db-update',
-    async (event, index: dataType['index'], data: Omit<dataType, 'index'>) => {
+    async (event, index: DataType['index'], data: Omit<DataType, 'index'>) => {
       event.returnValue = await db.update(index, data)
     }
   )
-  ipcMain.on('db-remove', async (event, index: dataType['index']) => {
+  ipcMain.on('db-remove', async (event, index: DataType['index']) => {
     event.returnValue = await db.remove(index)
   })
 }
