@@ -1,21 +1,24 @@
-import db, { dataType } from './mock'
+import db, { DataType } from './mock'
 import { delay } from './utils'
 
-const getAll = async () => {
+const getAll = async (): Promise<DataType[]> => {
   await delay()
   return db.map((it) => ({ ...it }))
 }
-const get = async (index: dataType['index']) => {
+const get = async (index: DataType['index']): Promise<DataType | void> => {
   await delay()
   return db.find((data) => data.index === index)
 }
-const post = async (data: Omit<dataType, 'index'>) => {
+const post = async (data: Omit<DataType, 'index'>): Promise<boolean> => {
   await delay()
   const index = db.at(-1)?.index ?? 0
   db.push({ ...data, index })
   return true
 }
-const update = async (index: dataType['index'], data: Omit<dataType, 'index'>) => {
+const update = async (
+  index: DataType['index'],
+  data: Omit<DataType, 'index'>
+): Promise<boolean> => {
   await delay()
   const origin = db.find((it) => it.index === index)
   if (origin === undefined) {
@@ -27,7 +30,7 @@ const update = async (index: dataType['index'], data: Omit<dataType, 'index'>) =
   })
   return true
 }
-const remove = async (index: dataType['index']) => {
+const remove = async (index: DataType['index']): Promise<boolean> => {
   await delay()
   const dbIndex = db.findIndex((data) => data.index === index)
   if (dbIndex === -1) {
