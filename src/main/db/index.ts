@@ -11,7 +11,7 @@ const get = async (index: DataType['index']): Promise<DataType | void> => {
 }
 const post = async (data: Omit<DataType, 'index'>): Promise<boolean> => {
   await delay()
-  const index = db.at(-1)?.index ?? 0
+  const index = (db.at(-1)?.index ?? -1) + 1
   db.push({ ...data, index })
   return true
 }

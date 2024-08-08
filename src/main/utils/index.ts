@@ -1,7 +1,8 @@
 // const { app } = require('electron')
 
 import { IpcMain } from 'electron'
-import db, { DataType } from '../db/mock'
+import * as db from '../db'
+import { DataType } from '../db/mock'
 
 function ipcHandler(ipcMain: IpcMain): void {
   // IPC test

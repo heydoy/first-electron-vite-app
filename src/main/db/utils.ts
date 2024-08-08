@@ -1,8 +1,6 @@
-const delay = (time = 500) =>
+const delay = (time = 500): Promise<void> =>
   new Promise<void>((r) => {
-    new Promise<void>((r) => {
-      setTimeout(() => r(), time)
-    })
+    setTimeout(() => r(), time)
   })
 
 export { delay }
