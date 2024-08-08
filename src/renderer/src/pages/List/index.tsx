@@ -19,7 +19,8 @@ const List = (): JSX.Element => {
     queryKey: ['get-all'],
     queryFn: () => list.getAll(),
     refetchInterval: 5 * 1000,
-    initialData: []
+    initialData: [],
+    staleTime: Infinity
   })
 
   const data = useQuery({
@@ -44,15 +45,16 @@ const List = (): JSX.Element => {
     onSuccess: (result) => console.log('remove result: ', result)
   })
 
+  // render에서 콘솔은 일렉트론 앱에서 dev tool 열었을 때의 콘솔이고
   const handleShowAllData = (): void => {
-    if (data.isFetching) {
+    if (allData.isLoading) {
       console.log('fetching...')
     }
     console.log(allData.data)
   }
 
   const handleShowData = (): void => {
-    if (data.isFetching) {
+    if (data.isLoading) {
       console.log('fetching...')
     }
     console.log(data.data)
@@ -94,3 +96,21 @@ const List = (): JSX.Element => {
 }
 
 export default List
+
+// - useQuery, useMutation
+// useQuery
+// const { isLoading, error, data } = useQuery('user', fetcher, option)
+// Server state를 읽어오는 hook
+// 첫번째 반환값을 이용하여 성공, 실패 처리 가능 (isFetching, isLoading, error, state)
+// useQuery의 첫번째 인자인 QueryKey에 따라서 캐싱 처리
+// 캐싱된 쿼리의 QueryKey와 동일한 요청을 하는 쿼리는 같은 것으로 인식하여 fetch하지 않고 캐싱된 쿼리 그대로 사용.
+// 쿼리키는 유니크한 값이면 된다. array 는 순서가 서로 바뀌어도 unique, object는 순서가 바뀌면 같은 값으로 인식
+// 두번째 인자 fetcher는 Promise를 반환하는 함수여야한다.
+// 세번째 인자 options에는 캐시 만료시점, refetch시점, 초기값등을 설정할 수 있으며 생략 가능하다.
+
+// useMutation
+// const { mutate } = useMutation(mutationFn, {options ...})
+// mutate(variables, {onSuccess, onSettled, onError})
+// Server State를 변경시키는 hook (create, update, delete)
+// return 값 중 mutate는 mutationFn을 trigger하는 ㅎ마수
+// 객체로 받은 variables를 mutationFn에 넘겨준다.

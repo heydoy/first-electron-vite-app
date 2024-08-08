@@ -15,6 +15,10 @@ const post = async (data: Omit<DataType, 'index'>): Promise<boolean> => {
   db.push({ ...data, index })
   return true
 }
+// db는 array인데 at()은 몇번째 아이템인지 가져오는 것.
+// -1로 되어있는 게 마지막 인덱스의 인덱스
+// db가 텅 비어있으면 db.at(-1)은 undefined여서 에러가 난다. 그래서 안정성을 위해 물음표를 붙여주는 것.
+
 const update = async (
   index: DataType['index'],
   data: Omit<DataType, 'index'>
@@ -41,5 +45,8 @@ const remove = async (index: DataType['index']): Promise<boolean> => {
   console.log('remove data:', removeData)
   return true
 }
+// 여기서 하는건 main 통해서 가는거라서 내 콘솔...
+// main은 일렉트론이라서 내 콘솔...
+// console.log를 연결해놔서 렌더러에서 뜨는 콘솔을 서버로그에도 뜨도록 조작할 수 있다.
 
 export { getAll, get, post, update, remove }
