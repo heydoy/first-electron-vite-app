@@ -2,6 +2,7 @@ import list, { ListDataType } from '../../api/list'
 import Button from '../../components/token/Button'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import ListCard from '@renderer/components/pure/ListCard'
 
 // - JSX.Element 와 React.ReactNode
 // 둘다 외부에서 주입받을 컴포넌트 타입을 정의할 때 가장 많이 사용한다.
@@ -13,21 +14,15 @@ import { useState } from 'react'
 // 참고: https://www.howdy-mj.me/react/react-node-and-jsx-element
 
 const List = (): JSX.Element => {
-  const [index] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const PAGE_SIZE = 10
 
-  const allData = useQuery({
-    queryKey: ['get-all'],
-    queryFn: () => list.getAll(),
+  const listData = useQuery({
+    queryKey: ['get-list', currentPage],
+    queryFn: () => list.getList(currentPage, PAGE_SIZE),
     refetchInterval: 5 * 1000,
-    initialData: [],
-    staleTime: Infinity
-  })
-
-  const data = useQuery({
-    queryKey: ['get', index],
-    queryFn: () => list.get(index),
-    refetchInterval: 5 * 1000,
-    initialData: null
+    staleTime: Infinity,
+    initialData: { data: [], currentPage, pageSize: PAGE_SIZE, totalPage: 0, hasNext: false }
   })
 
   const post = useMutation({
@@ -42,22 +37,14 @@ const List = (): JSX.Element => {
 
   const remove = useMutation({
     mutationFn: async (index: ListDataType['index']) => list.remove(index),
-    onSuccess: (result) => console.log('remove result: ', result)
+    onSuccess: (result) => {
+      console.log('remove result:', result)
+      listData.refetch()
+    }
   })
 
-  // render에서 콘솔은 일렉트론 앱에서 dev tool 열었을 때의 콘솔이고
-  const handleShowAllData = (): void => {
-    if (allData.isLoading) {
-      console.log('fetching...')
-    }
-    console.log(allData.data)
-  }
-
-  const handleShowData = (): void => {
-    if (data.isLoading) {
-      console.log('fetching...')
-    }
-    console.log(data.data)
+  const makeHandleChangePage = (page: number) => (): void => {
+    setCurrentPage(page)
   }
 
   const handlePostData = (): void => {
@@ -79,18 +66,51 @@ const List = (): JSX.Element => {
     update.mutate(data)
   }
 
-  const handleRemoveData = (): void => {
-    remove.mutate(0)
+  const makeHandleRemoveData = (index: number) => (): void => {
+    remove.mutate(index)
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{
+        display: 'flex',
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        flexDirection: 'column',
+        overflowY: 'scroll',
+        alignItems: 'center'
+      }}
+    >
       <h1>List Page</h1>
-      <Button onClick={handleShowAllData}> Get All Data </Button>
-      <Button onClick={handleShowData}> Get Data </Button>
+      <ul style={{ display: 'flex', height: 'fit-content', flexDirection: 'column', gap: '24px' }}>
+        {listData.data.data.map((it) => (
+          <ListCard
+            key={it.index}
+            index={it.index}
+            title={it.title}
+            description={it.description}
+            link={it.link}
+            removeHandler={makeHandleRemoveData(it.index)}
+          />
+        ))}
+      </ul>
+      <ul style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
+        {Array.from({ length: listData.data.totalPage }, (_, index) => (
+          <Button
+            style={{
+              fontWeight: currentPage === index + 1 ? 'bolder' : 'normal',
+              textDecoration: currentPage === index + 1 ? 'underline' : 'none'
+            }}
+            key={index + 1}
+            onClick={makeHandleChangePage(index + 1)}
+          >
+            {index + 1}
+          </Button>
+        ))}
+      </ul>
       <Button onClick={handleUpdateData}> Update Data</Button>
       <Button onClick={handlePostData}> Post Data </Button>
-      <Button onClick={handleRemoveData}> Remove Data </Button>
     </div>
   )
 }

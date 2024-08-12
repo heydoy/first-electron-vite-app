@@ -11,7 +11,7 @@ const get = async (index: DataType['index']): Promise<DataType | void> => {
 }
 const getList = async (page: number, size: number): Promise<Pagination<DataType>> => {
   await delay()
-  const totalPage = db.length
+  const totalPage = Math.ceil(db.length / size)
   const startIndex = size * (page - 1)
   const data = db.slice(startIndex, startIndex + size)
   return {

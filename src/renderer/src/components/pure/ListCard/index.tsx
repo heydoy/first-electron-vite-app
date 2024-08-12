@@ -30,30 +30,12 @@ type ListCardProps = {
   title: string
   description: string
   link: string
-}
-
-const StyledListCardButton = styled(Button)`
-  bgcolor: black;
-  color: white;
-  font-size: 14px;
-`
-
-type StyledListCardButtonProps = {
-  title: string
-  // color: string
-  // bgColor: string
-  // hoverBgColor: string
-  onClick: () => void
-}
-
-const ListCardButton = (props: StyledListCardButtonProps): JSX.Element => {
-  const { title, onClick } = props
-
-  return <StyledListCardButton onClick={onClick}>{title}</StyledListCardButton>
+  removeHandler: () => void
+  // updateHandler: () => void
 }
 
 const ListCard = (props: ListCardProps): JSX.Element => {
-  const { index, title, description, link } = props
+  const { index, title, description, link, removeHandler } = props
 
   const handleClick = (): void => {
     window.open(link, '_blank', 'noopener, noreferrer')
@@ -63,18 +45,7 @@ const ListCard = (props: ListCardProps): JSX.Element => {
       <h1 className="title">{title}</h1>
       <p className="description"> {description} </p>
       <p className="link">{link} </p>
-      <ListCardButton
-        title="삭제"
-        onClick={() => {
-          console.log('삭제')
-        }}
-      ></ListCardButton>
-      <ListCardButton
-        title="업데이트"
-        onClick={() => {
-          console.log('업데이트')
-        }}
-      ></ListCardButton>
+      <Button title="삭제" onClick={removeHandler} />
     </StyledListCard>
   )
 }
