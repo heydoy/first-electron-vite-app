@@ -1,5 +1,5 @@
 import db, { DataType } from './mock'
-import { delay } from './utils'
+import { delay, Pagination } from './utils'
 
 const getAll = async (): Promise<DataType[]> => {
   await delay()
@@ -8,6 +8,19 @@ const getAll = async (): Promise<DataType[]> => {
 const get = async (index: DataType['index']): Promise<DataType | void> => {
   await delay()
   return db.find((data) => data.index === index)
+}
+const getList = async (page: number, size: number): Promise<Pagination<DataType>> => {
+  await delay()
+  const totalPage = db.length
+  const startIndex = size * (page - 1)
+  const data = db.slice(startIndex, startIndex + size)
+  return {
+    data,
+    totalPage,
+    currentPage: page,
+    pageSize: size,
+    hasNext: db[startIndex + size] !== undefined
+  }
 }
 const post = async (data: Omit<DataType, 'index'>): Promise<boolean> => {
   await delay()
@@ -42,4 +55,4 @@ const remove = async (index: DataType['index']): Promise<boolean> => {
   return true
 }
 
-export { getAll, get, post, update, remove }
+export { getAll, get, getList, post, update, remove }

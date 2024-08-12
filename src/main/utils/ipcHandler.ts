@@ -9,6 +9,9 @@ const setHandler = (ipcMain: Electron.IpcMain): void => {
   ipcMain.on('db-getAll', async (event) => {
     event.returnValue = await db.getAll()
   })
+  ipcMain.on('db-getList', async (event, page: number, size: number) => {
+    event.returnValue = await db.getList(page, size)
+  })
   ipcMain.on('db-get', async (event, index: DataType['index']) => {
     event.returnValue = await db.get(index)
   })
