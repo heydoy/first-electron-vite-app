@@ -2,76 +2,55 @@ import list, { ListDataType } from '../../api/list'
 import Button from '../../components/token/Button'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import ListData from '../../components/feat/ListData'
 
 const List = (): JSX.Element => {
-  const [index] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const PAGE_SIZE = 10
 
-  const allData = useQuery({
-    queryKey: ['get-all'],
-    queryFn: () => list.getAll(),
+  const listData = useQuery({
+    queryKey: ['get-list', currentPage],
+    queryFn: () => list.getList(currentPage, PAGE_SIZE),
     refetchInterval: 5 * 1000,
-    initialData: []
-  })
-  const data = useQuery({
-    queryKey: ['get', index],
-    queryFn: () => list.get(index),
-    refetchInterval: 5 * 1000,
-    initialData: null
-  })
-  const post = useMutation({
-    mutationFn: async (data: Omit<ListDataType, 'index'>) => list.post(data),
-    onSuccess: (result) => console.log('post result:', result)
-  })
-  const update = useMutation({
-    mutationFn: async (data: ListDataType) => list.update(data.index, data),
-    onSuccess: (result) => console.log('update result:', result)
+    initialData: { data: [], currentPage, pageSize: PAGE_SIZE, totalPage: 0, hasNext: false }
   })
   const remove = useMutation({
     mutationFn: async (index: ListDataType['index']) => list.remove(index),
-    onSuccess: (result) => console.log('remove result:', result)
+    onSuccess: (result) => {
+      console.log('remove result:', result)
+      listData.refetch()
+    }
   })
 
-  const handleShowAllData = (): void => {
-    if (allData.isFetching) {
-      console.log('fetching...')
-    }
-    console.log(allData.data)
+  const makeHandleChangePage = (page: number) => (): void => {
+    setCurrentPage(page)
   }
-  const handleShowData = (): void => {
-    if (data.isFetching) {
-      console.log('fetching...')
-    }
-    console.log(data.data)
-  }
-  const handlePostData = (): void => {
-    const data: Omit<ListDataType, 'index'> = {
-      title: '만들어진 제목',
-      description: '만들어진 설명',
-      link: '만들어진 link'
-    }
-    post.mutate(data)
-  }
-  const handleUpdateData = (): void => {
-    const data: ListDataType = {
-      index: 0,
-      title: '수정된 제목',
-      description: '수정된 설명',
-      link: '수정된 link'
-    }
-    update.mutate(data)
-  }
-  const handleRemoveData = (): void => {
-    remove.mutate(0)
+
+  const makeHandleRemoveData = (index: number) => (): void => {
+    remove.mutate(index)
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      list page
-      <Button onClick={handleShowAllData}>get all</Button>
-      <Button onClick={handleShowData}>get</Button>
-      <Button onClick={handlePostData}>post</Button>
-      <Button onClick={handleUpdateData}>update</Button>
-      <Button onClick={handleRemoveData}>remove</Button>
+      <ul>
+        {listData.data.data.map((it) => (
+          <ListData key={it.index} data={it} onRemove={makeHandleRemoveData(it.index)} />
+        ))}
+      </ul>
+      <ul style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+        {Array.from({ length: listData.data.totalPage }, (_, index) => (
+          <Button
+            style={{
+              fontWeight: currentPage === index + 1 ? 'bold' : 'normal',
+              textDecoration: currentPage === index + 1 ? 'underline' : 'none'
+            }}
+            key={index + 1}
+            onClick={makeHandleChangePage(index + 1)}
+          >
+            {index + 1}
+          </Button>
+        ))}
+      </ul>
     </div>
   )
 }
