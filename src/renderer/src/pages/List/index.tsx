@@ -33,10 +33,10 @@ const List = (): JSX.Element => {
   //   onSuccess: (result) => console.log('post result: ', result)
   // })
 
-  // const update = useMutation({
-  //   mutationFn: async (data: ListDataType) => list.update(data.index, data),
-  //   onSuccess: (result) => console.log('update result: ', result)
-  // })
+  const update = useMutation({
+    mutationFn: async (data: ListDataType) => list.update(data.index, data),
+    onSuccess: (result) => console.log('update result: ', result)
+  })
 
   const remove = useMutation({
     mutationFn: async (index: ListDataType['index']) => list.remove(index),
@@ -89,6 +89,13 @@ const List = (): JSX.Element => {
       setIsShowModal(data.index)
       // update.mutate(data)
     }
+
+  const handleRefresh = (): void => {
+    listData.refetch()
+  }
+  const handleClose = (): void => {
+    setIsShowModal(-1)
+  }
   return (
     <div
       style={{
@@ -119,15 +126,18 @@ const List = (): JSX.Element => {
                 <Modal
                   key={it.index}
                   title="수정"
-                  onClose={() => setIsShowModal(-1)}
                   content={
                     <ListForm
                       key={it.index}
                       formData={{ title: it.title, description: it.description, link: it.link }}
                       index={it.index}
                       isEdit={true}
-                    ></ListForm>
+                      onClose={handleClose}
+                      onRefresh={handleRefresh}
+                      finishHandler={update}
+                    />
                   }
+                  onClose={handleClose}
                 />,
                 document.querySelector('#root') as HTMLElement
               )}

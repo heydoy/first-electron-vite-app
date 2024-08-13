@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { ListDataType } from '@renderer/api/list'
 import { useState } from 'react'
-
+import { UseMutationResult } from '@tanstack/react-query'
 const StyledListForm = styled.form`
   all: unset;
   display: flex;
@@ -31,16 +31,30 @@ const ListForm = (props: {
   formData: ListFormProps
   index: number
   isEdit: boolean
+  onClose: () => void
+  onRefresh: () => void
+  finishHandler: UseMutationResult<boolean, Error, ListDataType, unknown>
 }): JSX.Element => {
   const propData: Omit<ListDataType, 'index'> = props.isEdit
     ? props.formData
     : { title: '', description: '', link: '' }
-
   const [index] = useState(props.index)
   const [data, setData] = useState(propData)
 
-  const handleUpdate = (): void => {
+  const handleUpdate = async (e: MouseEvent): Promise<void> => {
     console.log(data)
+    e.preventDefault()
+    const result: ListDataType = {
+      ...data,
+      index: index
+    }
+    try {
+      await props.finishHandler.mutate(result)
+      props.onClose()
+      props.onRefresh()
+    } catch (error) {
+      console.error('Update failed:', error)
+    }
   }
 
   return (
@@ -70,13 +84,7 @@ const ListForm = (props: {
         value={data.link}
         onChange={(e) => setData({ ...data, link: e.target.value })}
       />
-      <button
-        type="submit"
-        onClick={(e) => {
-          handleUpdate()
-          e.preventDefault()
-        }}
-      >
+      <button type="submit" onClick={handleUpdate}>
         {props.isEdit ? '수정' : '추가'}
       </button>
     </StyledListForm>
