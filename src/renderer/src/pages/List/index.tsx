@@ -47,24 +47,24 @@ const List = (): JSX.Element => {
     setCurrentPage(page)
   }
 
-  const handlePostData = (): void => {
-    const data: Omit<ListDataType, 'index'> = {
-      title: 'Posted Title',
-      description: 'Posted description',
-      link: 'https://posted.link'
-    }
-    post.mutate(data)
-  }
+  // const handlePostData = (): void => {
+  //   const data: Omit<ListDataType, 'index'> = {
+  //     title: 'Posted Title',
+  //     description: 'Posted description',
+  //     link: 'https://posted.link'
+  //   }
+  //   post.mutate(data)
+  // }
 
-  const handleUpdateData = (): void => {
-    const data: ListDataType = {
-      index: 0,
-      title: 'Edited Title',
-      description: 'Edited description',
-      link: 'https://edited.link'
-    }
-    update.mutate(data)
-  }
+  // const handleUpdateData = (): void => {
+  //   const data: ListDataType = {
+  //     index: 0,
+  //     title: 'Edited Title',
+  //     description: 'Edited description',
+  //     link: 'https://edited.link'
+  //   }
+  //   update.mutate(data)
+  // }
 
   const makeHandleRemoveData =
     (index: number) =>
@@ -77,6 +77,13 @@ const List = (): JSX.Element => {
       // 후자는 해당 태그의 기본 이벤트를 막는 것. (예를 들어 a태그는 하이퍼링크 태그인데, 온클릭 안해줘도 알아서 가는게 기본 기능.)
     }
 
+  const makeHandleUpdateData =
+    (index: number) =>
+    (e: MouseEvent): void => {
+      console.log(index, '업데이트 요청')
+      // 수정하는 폼 팝업을 띄워야함
+      e.stopPropagation()
+    }
   return (
     <div
       style={{
@@ -99,6 +106,7 @@ const List = (): JSX.Element => {
             description={it.description}
             link={it.link}
             removeHandler={makeHandleRemoveData(it.index)}
+            updateHandler={makeHandleUpdateData(it.index)}
           />
         ))}
       </ul>
@@ -116,8 +124,6 @@ const List = (): JSX.Element => {
           </Button>
         ))}
       </ul>
-      <Button onClick={handleUpdateData}> Update Data</Button>
-      <Button onClick={handlePostData}> Post Data </Button>
     </div>
   )
 }

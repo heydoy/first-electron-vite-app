@@ -1,4 +1,4 @@
-import styled, { CSSProperties } from 'styled-components'
+import styled from 'styled-components'
 import Button from '@renderer/components/token/Button'
 
 const StyledListCard = styled.div`
@@ -30,12 +30,12 @@ type ListCardProps = {
   title: string
   description: string
   link: string
-  removeHandler: () => void
-  // updateHandler: () => void
+  removeHandler: (e: MouseEvent) => void
+  updateHandler: (e: MouseEvent) => void
 }
 
 const ListCard = (props: ListCardProps): JSX.Element => {
-  const { index, title, description, link, removeHandler } = props
+  const { index, title, description, link, removeHandler, updateHandler } = props
 
   const handleClick = (): void => {
     window.open(link, '_blank', 'noopener, noreferrer')
@@ -47,6 +47,9 @@ const ListCard = (props: ListCardProps): JSX.Element => {
       <p className="link">{link} </p>
       <Button style={{ color: 'white' }} onClick={removeHandler}>
         삭제
+      </Button>
+      <Button style={{ color: 'white' }} onClick={updateHandler}>
+        수정
       </Button>
     </StyledListCard>
   )
