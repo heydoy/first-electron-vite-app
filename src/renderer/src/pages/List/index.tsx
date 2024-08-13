@@ -3,6 +3,9 @@ import Button from '../../components/token/Button'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import ListCard from '@renderer/components/pure/ListCard'
+import { createPortal } from 'react-dom'
+import Modal from '@renderer/components/token/Modal'
+import ListForm from '@renderer/components/pure/ListForm'
 
 // - JSX.Element 와 React.ReactNode
 // 둘다 외부에서 주입받을 컴포넌트 타입을 정의할 때 가장 많이 사용한다.
@@ -25,15 +28,15 @@ const List = (): JSX.Element => {
     initialData: { data: [], currentPage, pageSize: PAGE_SIZE, totalPage: 0, hasNext: false }
   })
 
-  const post = useMutation({
-    mutationFn: async (data: Omit<ListDataType, 'index'>) => list.post(data),
-    onSuccess: (result) => console.log('post result: ', result)
-  })
+  // const post = useMutation({
+  //   mutationFn: async (data: Omit<ListDataType, 'index'>) => list.post(data),
+  //   onSuccess: (result) => console.log('post result: ', result)
+  // })
 
-  const update = useMutation({
-    mutationFn: async (data: ListDataType) => list.update(data.index, data),
-    onSuccess: (result) => console.log('update result: ', result)
-  })
+  // const update = useMutation({
+  //   mutationFn: async (data: ListDataType) => list.update(data.index, data),
+  //   onSuccess: (result) => console.log('update result: ', result)
+  // })
 
   const remove = useMutation({
     mutationFn: async (index: ListDataType['index']) => list.remove(index),
@@ -77,12 +80,14 @@ const List = (): JSX.Element => {
       // 후자는 해당 태그의 기본 이벤트를 막는 것. (예를 들어 a태그는 하이퍼링크 태그인데, 온클릭 안해줘도 알아서 가는게 기본 기능.)
     }
 
+  const [isShowModal, setIsShowModal] = useState(-1)
   const makeHandleUpdateData =
-    (index: number) =>
+    (data: ListDataType) =>
     (e: MouseEvent): void => {
-      console.log(index, '업데이트 요청')
-      // 수정하는 폼 팝업을 띄워야함
+      console.log(data.index, '업데이트 요청')
       e.stopPropagation()
+      setIsShowModal(data.index)
+      // update.mutate(data)
     }
   return (
     <div
@@ -99,15 +104,34 @@ const List = (): JSX.Element => {
       <h1>List Page</h1>
       <ul style={{ display: 'flex', height: 'fit-content', flexDirection: 'column', gap: '24px' }}>
         {listData.data.data.map((it) => (
-          <ListCard
-            key={it.index}
-            index={it.index}
-            title={it.title}
-            description={it.description}
-            link={it.link}
-            removeHandler={makeHandleRemoveData(it.index)}
-            updateHandler={makeHandleUpdateData(it.index)}
-          />
+          <li key={it.index}>
+            <ListCard
+              key={it.index}
+              index={it.index}
+              title={it.title}
+              description={it.description}
+              link={it.link}
+              removeHandler={makeHandleRemoveData(it.index)}
+              updateHandler={makeHandleUpdateData(it)}
+            />
+            {isShowModal === it.index &&
+              createPortal(
+                <Modal
+                  key={it.index}
+                  title="수정"
+                  onClose={() => setIsShowModal(-1)}
+                  content={
+                    <ListForm
+                      key={it.index}
+                      formData={{ title: it.title, description: it.description, link: it.link }}
+                      index={it.index}
+                      isEdit={true}
+                    ></ListForm>
+                  }
+                />,
+                document.body
+              )}
+          </li>
         ))}
       </ul>
       <ul style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
