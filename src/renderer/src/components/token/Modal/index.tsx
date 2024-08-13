@@ -1,3 +1,24 @@
+import styled from 'styled-components'
+
+const StyleModal = styled.div`
+  width: 300px;
+  height: 300px;
+  background: #ffffff;
+  padding: 1rem;
+  position: absolute;
+  top: 30%;
+  & > h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  label {
+    color: black;
+  }
+`
+
 const Modal = (props: {
   title: string
   onClose: () => void
@@ -6,11 +27,11 @@ const Modal = (props: {
   const { title, onClose, content } = props
 
   return (
-    <div className="modal">
+    <StyleModal className="modal">
       <h2>{title}</h2>
       <div>{content}</div>
       <button onClick={onClose}>Close</button>
-    </div>
+    </StyleModal>
   )
 }
 

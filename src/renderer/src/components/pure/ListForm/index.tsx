@@ -6,7 +6,7 @@ const StyledListForm = styled.form`
   all: unset;
   display: flex;
   flex-direction: column;
-  padding: 12px;
+  padding: 8px;
   & > .index,
   .title,
   .description,
@@ -14,7 +14,7 @@ const StyledListForm = styled.form`
     font-size: 13px;
     color: 'white';
     width: '60px';
-    margin-bottom: '12px';
+    margin-bottom: '4px';
   }
   & > button {
     background: 'orange';

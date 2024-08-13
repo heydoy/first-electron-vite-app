@@ -104,7 +104,7 @@ const List = (): JSX.Element => {
       <h1>List Page</h1>
       <ul style={{ display: 'flex', height: 'fit-content', flexDirection: 'column', gap: '24px' }}>
         {listData.data.data.map((it) => (
-          <li key={it.index}>
+          <>
             <ListCard
               key={it.index}
               index={it.index}
@@ -129,9 +129,9 @@ const List = (): JSX.Element => {
                     ></ListForm>
                   }
                 />,
-                document.body
+                document.querySelector('#root') as HTMLElement
               )}
-          </li>
+          </>
         ))}
       </ul>
       <ul style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
