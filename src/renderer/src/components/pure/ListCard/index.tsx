@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { CSSProperties } from 'styled-components'
 import Button from '@renderer/components/token/Button'
 
 const StyledListCard = styled.div`
@@ -45,7 +45,9 @@ const ListCard = (props: ListCardProps): JSX.Element => {
       <h1 className="title">{title}</h1>
       <p className="description"> {description} </p>
       <p className="link">{link} </p>
-      <Button title="삭제" onClick={removeHandler} />
+      <Button style={{ color: 'white' }} onClick={removeHandler}>
+        삭제
+      </Button>
     </StyledListCard>
   )
 }

@@ -66,9 +66,16 @@ const List = (): JSX.Element => {
     update.mutate(data)
   }
 
-  const makeHandleRemoveData = (index: number) => (): void => {
-    remove.mutate(index)
-  }
+  const makeHandleRemoveData =
+    (index: number) =>
+    (e: MouseEvent): void => {
+      remove.mutate(index)
+      e.stopPropagation()
+
+      // e.stopPropagation()과 e.preventDefault의 차이점은
+      // 전자는 이벤트 전파를 막는 것
+      // 후자는 해당 태그의 기본 이벤트를 막는 것. (예를 들어 a태그는 하이퍼링크 태그인데, 온클릭 안해줘도 알아서 가는게 기본 기능.)
+    }
 
   return (
     <div
