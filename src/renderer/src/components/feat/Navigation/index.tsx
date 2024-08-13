@@ -53,8 +53,13 @@ const Navigation = (props: { navList: Array<NavigationProps> }): JSX.Element => 
     handleRoute('/')
   }
 
+  // CSS 적용 우선 순위가 id > class > ...> inline style > ..?
   return (
-    <StyledNavigation className={isOpen ? 'open' : 'close'}>
+    <StyledNavigation
+      className={isOpen ? 'open' : 'close'}
+      id="side-nav"
+      style={{ width: isOpen ? 'fit-content' : '100px' }}
+    >
       <ExpandableButton icon="Logo" desc="LISA" isOpen={isOpen} onClick={handleNavigationOpen} />
       {navList.map((prop) => (
         <ExpandableButton

@@ -27,6 +27,9 @@ code {
 }
 
 #root {
+  --side-nav-width: 100px;
+  /*-- 를 앞에 붙여서 변수를 선언. 차일드에서도 바로 사용할 수 있따.*/
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,6 +37,8 @@ code {
   margin-bottom: 80px;
   width: 100vw;
   height: 100vh;
+  padding-left: var(--nav-width);
+  /*var(변수 이름)을 넣어서 사용할 수 있다.*/
 }
 
 .logo {
@@ -43,6 +48,10 @@ code {
   width: 128px;
   will-change: filter;
   transition: filter 300ms;
+}
+
+#side-nav {
+  width: var(--side-nav-width);
 }
 
 .logo:hover {
